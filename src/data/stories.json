@@ -1,0 +1,46 @@
+[
+  {
+    "id":"1",
+    "title":"Epic Adventures",
+    "author":"Creative Minds",
+    "genre":"Epic",
+    "cover":"https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=400&q=80",
+    "audio":"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+    "duration":"2:47",
+    "text":"In a world where heroes are born from the ashes of fallen kingdoms, a young warrior must rise to face the darkness that threatens to consume the land. With nothing but a sword and their wits, they embark on a journey that will test their courage and change the fate of the world forever.",
+    "description":"A tale of courage and destiny in a world on the brink of destruction."
+  },
+  {
+    "id":"2",
+    "title":"Romantic Tale",
+    "author":"Love Ink",
+    "genre":"Romance",
+    "cover":"https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=400&q=80",
+    "audio":"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+    "duration":"3:10",
+    "text":"In the quiet town of Willow Creek, where time seemed to stand still, two souls found each other against all odds. Their love story, written in the stars, would become the stuff of legends, proving that true love knows no boundaries.",
+    "description":"A heartwarming story of love that defies all odds."
+  },
+  {
+    "id":"3",
+    "title":"Mystery Mansion",
+    "author":"Dark Pen",
+    "genre":"Mystery",
+    "cover":"https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=400&q=80",
+    "audio":"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+    "duration":"4:15",
+    "text":"The old Blackwood Mansion had stood empty for decades, its dark secrets locked away behind its crumbling walls. When a group of friends decides to spend the night, they quickly realize that some doors should never be opened, and some mysteries are better left unsolved.",
+    "description":"A chilling mystery that will keep you on the edge of your seat."
+  },
+  {
+    "id":"4",
+    "title":"Space Odyssey",
+    "author":"Galactic Tales",
+    "genre":"Sci-Fi",
+    "cover":"https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&q=80",
+    "audio":"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
+    "duration":"3:45",
+    "text":"In the year 3025, humanity has colonized the solar system, but the discovery of an ancient alien artifact on Europa changes everything. Captain Aria Chen and her crew must navigate political intrigue and cosmic dangers to uncover the truth about humanity's place in the universe.",
+    "description":"An epic space adventure that explores the final frontier."
+  }
+]

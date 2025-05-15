@@ -1,0 +1,19 @@
+title: Space Explorer
+author: Cosmic Tales
+genre: Science Fiction
+cover: https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80
+audio: /stories/space-explorer.mp3
+duration: 7:45
+description: A journey through the cosmos to discover new worlds and civilizations.
+
+Commander Nova adjusted her helmet as the starship prepared to enter the uncharted sector of the Andromeda galaxy. The hum of the warp drive filled the cabin as the ship's AI, designated AL-7, announced their imminent arrival.
+
+"Approaching destination in T-minus 30 seconds," AL-7's smooth voice echoed through the cabin. "All systems nominal."
+
+Nova's fingers danced across the holographic controls, bringing up the long-range scanners. The crew of the Aether had been traveling for nearly two years on their mission to explore the far reaches of space, and this was their most promising lead yet.
+
+"I'm picking up an energy signature," reported Ensign Kael, his three-fingered hands moving deftly over his console. "It's like nothing we've seen before."
+
+As the ship dropped out of warp speed, the crew was greeted by a sight that took their breath away. Before them floated a massive space station, its surface shimmering with an iridescent glow. Ancient runes covered its surface, pulsing with a soft blue light.
+
+"This changes everything," Nova whispered, her eyes wide with wonder. The discovery would rewrite the history books and prove that humanity was not alone in the universe.

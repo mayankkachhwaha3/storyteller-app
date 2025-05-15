@@ -1,0 +1,19 @@
+title: The Ocean's Secret
+author: Marine Adventures
+genre: Adventure
+cover: https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80
+audio: /stories/ocean-mystery.mp3
+duration: 6:12
+description: An underwater expedition uncovers ancient secrets beneath the waves.
+
+The deep sea submersible descended into the abyss, its lights barely piercing the darkness of the Marianas Trench. Dr. Elara Voss leaned forward in her seat, her eyes fixed on the sonar display.
+
+"There it is," she whispered, pointing to a large, unnatural shape on the screen. "Right where the coordinates said it would be."
+
+Her co-pilot, Captain Jonas Rhee, adjusted their course. "I've never seen anything like this," he admitted, his voice tense with excitement. "It's not on any of our charts."
+
+As they approached, the shape resolved into what appeared to be the ruins of an ancient city, its spires and domes covered in centuries of coral growth. But what made Elara's breath catch was the strange, glowing symbols that pulsed with an eerie blue light.
+
+"This predates any known civilization by thousands of years," she murmured, her gloved fingers hovering over the camera controls. "How is this possible?"
+
+Their discovery would challenge everything we thought we knew about human history, but first, they had to make it back to the surface to tell the world.

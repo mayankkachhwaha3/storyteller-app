@@ -1,0 +1,35 @@
+[
+  {
+    "id": "the-magical-forest",
+    "title": "The Magical Forest",
+    "author": "StoryTeller AI",
+    "genre": "Fantasy",
+    "cover": "https://images.unsplash.com/photo-1503435980610-a51c2b1c582d?w=800&q=80",
+    "audio": "/stories/magical-forest.mp3",
+    "duration": "5:23",
+    "description": "A young explorer discovers a hidden forest filled with magical creatures.",
+    "text": "Once upon a time, in a land not so far away, there was a magical forest that only appeared under the light of a blue moon..."
+  },
+  {
+    "id": "space-explorer",
+    "title": "Space Explorer",
+    "author": "Cosmic Tales",
+    "genre": "Science Fiction",
+    "cover": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80",
+    "audio": "/stories/space-explorer.mp3",
+    "duration": "7:45",
+    "description": "A journey through the cosmos to discover new worlds and civilizations.",
+    "text": "Commander Nova adjusted her helmet as the starship prepared to enter the uncharted sector of the Andromeda galaxy..."
+  },
+  {
+    "id": "ocean-mystery",
+    "title": "The Ocean's Secret",
+    "author": "Marine Adventures",
+    "genre": "Adventure",
+    "cover": "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80",
+    "audio": "/stories/ocean-mystery.mp3",
+    "duration": "6:12",
+    "description": "An underwater expedition uncovers ancient secrets beneath the waves.",
+    "text": "The deep sea submersible descended into the abyss, its lights barely piercing the darkness of the Marianas Trench..."
+  }
+]
