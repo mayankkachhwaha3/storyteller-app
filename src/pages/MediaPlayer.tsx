@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Story } from '../types';
 
 export default function MediaPlayer() {
@@ -8,8 +8,11 @@ export default function MediaPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [volume, setVolume] = useState(0.7);
+  const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
+  const volumeSliderRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -53,6 +56,75 @@ export default function MediaPlayer() {
     fetchStory();
   }, [id, navigate]);
 
+  // Handle keyboard shortcuts
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    switch (e.key.toLowerCase()) {
+      case ' ':
+      case 'k':
+        e.preventDefault();
+        togglePlay();
+        break;
+      case 'm':
+        e.preventDefault();
+        toggleMute();
+        break;
+      case 'arrowleft':
+        e.preventDefault();
+        seek(-15);
+        break;
+      case 'arrowright':
+        e.preventDefault();
+        seek(15);
+        break;
+      case 'arrowup':
+        e.preventDefault();
+        setVolume(prev => Math.min(prev + 0.1, 1));
+        break;
+      case 'arrowdown':
+        e.preventDefault();
+        setVolume(prev => Math.max(prev - 0.1, 0));
+        break;
+    }
+  }, []);
+
+  useEffect(() => {
+    // Set up keyboard event listener
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleKeyDown]);
+
+  // Update volume when it changes
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+      if (volume === 0) {
+        setIsMuted(true);
+      } else {
+        setIsMuted(false);
+      }
+    }
+  }, [volume]);
+
+  // Initialize audio with saved volume
+  useEffect(() => {
+    const savedVolume = localStorage.getItem('audioVolume');
+    if (savedVolume) {
+      const vol = parseFloat(savedVolume);
+      setVolume(vol);
+      if (audioRef.current) {
+        audioRef.current.volume = vol;
+      }
+    }
+  }, []);
+
+  // Save volume to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem('audioVolume', volume.toString());
+  }, [volume]);
+
   useEffect(() => {
     // Set up audio event listeners
     const audio = audioRef.current;
@@ -82,6 +154,38 @@ export default function MediaPlayer() {
       audio.play();
     }
     setIsPlaying(!isPlaying);
+  };
+
+  const toggleMute = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    
+    if (isMuted) {
+      audio.volume = volume || 0.7;
+      setIsMuted(false);
+    } else {
+      audio.volume = 0;
+      setIsMuted(true);
+    }
+  };
+
+  const seek = (seconds: number) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    
+    const newTime = Math.max(0, Math.min(audio.currentTime + seconds, duration));
+    audio.currentTime = newTime;
+    setCurrentTime(newTime);
+  };
+
+  const handleVolumeChange = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!volumeSliderRef.current) return;
+    
+    const rect = volumeSliderRef.current.getBoundingClientRect();
+    const pos = (e.clientX - rect.left) / rect.width;
+    const newVolume = Math.max(0, Math.min(pos, 1));
+    
+    setVolume(newVolume);
   };
 
   const handleProgressBarClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -161,41 +265,88 @@ export default function MediaPlayer() {
           </div>
         </div>
         
-        <div className="flex items-center space-x-6">
-          <button 
-            className="text-gray-400 hover:text-white transition-colors"
-            aria-label="Previous track"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0019 16V8a1 1 0 00-1.6-.8l-5.333 4zM4.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0011 16V8a1 1 0 00-1.6-.8l-5.334 4z" />
-            </svg>
-          </button>
-          
-          <button 
-            className="bg-green-600 hover:bg-green-500 text-white rounded-full p-4 transition-colors"
-            onClick={togglePlay}
-            aria-label={isPlaying ? 'Pause' : 'Play'}
-          >
-            {isPlaying ? (
+        <div className="flex flex-col items-center w-full max-w-md space-y-6">
+          <div className="flex items-center justify-center w-full space-x-6">
+            <button 
+              className="text-gray-400 hover:text-white transition-colors"
+              onClick={() => seek(-15)}
+              aria-label="Seek backward 15 seconds"
+            >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0019 16V8a1 1 0 00-1.6-.8l-5.333 4zM4.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0011 16V8a1 1 0 00-1.6-.8l-5.334 4z" />
               </svg>
-            ) : (
+            </button>
+            
+            <button 
+              className="bg-green-600 hover:bg-green-500 text-white rounded-full p-4 transition-colors"
+              onClick={togglePlay}
+              aria-label={isPlaying ? 'Pause' : 'Play'}
+            >
+              {isPlaying ? (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              )}
+            </button>
+            
+            <button 
+              className="text-gray-400 hover:text-white transition-colors"
+              onClick={() => seek(15)}
+              aria-label="Seek forward 15 seconds"
+            >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.933 12.8a1 1 0 000-1.6L6.6 7.2A1 1 0 005 8v8a1 1 0 001.6.8l5.333-4zM19.933 12.8a1 1 0 000-1.6l-5.333-4A1 1 0 0013 8v8a1 1 0 001.6.8l5.333-4z" />
               </svg>
-            )}
-          </button>
-          
-          <button 
-            className="text-gray-400 hover:text-white transition-colors"
-            aria-label="Next track"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.933 12.8a1 1 0 000-1.6L6.6 7.2A1 1 0 005 8v8a1 1 0 001.6.8l5.333-4zM19.933 12.8a1 1 0 000-1.6l-5.333-4A1 1 0 0013 8v8a1 1 0 001.6.8l5.333-4z" />
-            </svg>
-          </button>
+            </button>
+          </div>
+
+          {/* Volume Control */}
+          <div className="flex items-center w-full space-x-3 px-4">
+            <button 
+              onClick={toggleMute}
+              className="text-gray-400 hover:text-white transition-colors"
+              aria-label={isMuted ? 'Unmute' : 'Mute'}
+            >
+              {isMuted || volume === 0 ? (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clipRule="evenodd" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l2 2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+                </svg>
+              ) : volume > 0.5 ? (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072M12 5l-7 7 7 7m0 0a9.966 9.966 0 01-7.071-2.933M12 19l-7-7" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clipRule="evenodd" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072" />
+                </svg>
+              )}
+            </button>
+            
+            <div 
+              ref={volumeSliderRef}
+              className="flex-1 h-1 bg-gray-700 rounded-full cursor-pointer group relative"
+              onClick={handleVolumeChange}
+            >
+              <div 
+                className="h-full bg-gray-400 rounded-full absolute top-0 left-0"
+                style={{ width: `${isMuted ? 0 : volume * 100}%` }}
+              >
+                <div className="absolute right-0 -top-1 h-3 w-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="text-xs text-gray-500 mt-2 text-center">
+          <p>Press <kbd className="px-2 py-1 bg-gray-800 rounded">←</kbd> <kbd className="px-2 py-1 bg-gray-800 rounded">→</kbd> to seek 15s, <kbd className="px-2 py-1 bg-gray-800 rounded">↑</kbd> <kbd className="px-2 py-1 bg-gray-800 rounded">↓</kbd> for volume, <kbd className="px-2 py-1 bg-gray-800 rounded">Space</kbd> to play/pause</p>
         </div>
       </div>
       

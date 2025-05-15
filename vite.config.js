@@ -1,12 +1,22 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { fileURLToPath, URL } from 'url';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react({
+      babel: {
+        presets: ['@babel/preset-typescript'],
+        plugins: []
+      }
+    })
+  ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': path.resolve(__dirname, './src')
     }
   },
   server: {
@@ -23,9 +33,10 @@ export default defineConfig({
         secure: false
       }
     },
-    port: 3000,
+    port: 3002,
     strictPort: true,
-    open: true
+    open: true,
+    host: true
   },
   build: {
     outDir: 'dist',

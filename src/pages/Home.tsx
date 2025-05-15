@@ -13,36 +13,61 @@ export default function Home() {
   useEffect(() => {
     const loadStories = async () => {
       try {
-        console.log('Starting to load stories...'); // Debug log
+        console.log('Starting to load stories...');
         setLoading(true);
         
         // Try to fetch from API first
         try {
-          console.log('Fetching from API...'); // Debug log
-          const response = await fetch('http://localhost:3001/api/stories');
-          console.log('API response status:', response.status); // Debug log
-          if (response.ok) {
-            const data = await response.json();
-            console.log('Fetched stories:', data); // Debug log
-            setStories(data);
-            setError(null);
-            
-            // Save to local storage for offline access
-            localStorage.setItem('stories', JSON.stringify(data));
-            console.log('Stories saved to local storage'); // Debug log
-            return;
+          console.log('Fetching from API...');
+          const response = await fetch('http://localhost:3001/api/stories', {
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            credentials: 'include'
+          });
+          console.log('API response status:', response.status);
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
           }
-          throw new Error('Failed to fetch stories from API');
+          
+          const data = await response.json();
+          console.log('Fetched stories:', data);
+          
+          if (!Array.isArray(data)) {
+            throw new Error('Invalid data format received from server');
+          }
+          
+          setStories(data);
+          setError(null);
+          
+          // Save to local storage for offline access
+          try {
+            localStorage.setItem('stories', JSON.stringify(data));
+            console.log('Stories saved to local storage');
+          } catch (storageError) {
+            console.warn('Could not save to local storage:', storageError);
+          }
+          
         } catch (apiError) {
           console.warn('Falling back to local storage due to API error:', apiError);
           
           // Fall back to local storage if API fails
-          const savedStories = localStorage.getItem('stories');
-          if (savedStories) {
-            setStories(JSON.parse(savedStories));
-            setError('Could not connect to server. Showing cached stories.');
-          } else {
-            throw new Error('No stories available offline');
+          try {
+            const savedStories = localStorage.getItem('stories');
+            if (savedStories) {
+              const parsedStories = JSON.parse(savedStories);
+              if (Array.isArray(parsedStories) && parsedStories.length > 0) {
+                setStories(parsedStories);
+                setError('Could not connect to server. Showing cached stories.');
+                return;
+              }
+            }
+            throw new Error('No valid stories available offline');
+          } catch (localError) {
+            console.error('Error loading from local storage:', localError);
+            throw localError;
           }
         }
       } catch (err) {
