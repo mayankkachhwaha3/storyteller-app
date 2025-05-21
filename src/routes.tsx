@@ -6,6 +6,7 @@ import Search from "./pages/Search";
 import SearchResults from "./pages/SearchResults";
 import MediaPlayer from "./pages/MediaPlayer";
 import Subscription from "./pages/Subscription";
+import StoryGenerator from "./pages/StoryGenerator";
 
 export const routes=[
   {path:"/",element:<Welcome/>},
@@ -15,5 +16,6 @@ export const routes=[
   {path:"/search",element:<Search/>},
   {path:"/search/:query",element:<SearchResults/>},
   {path:"/player/:id",element:<MediaPlayer/>},
-  {path:"/sub",element:<Subscription/>}
+  {path:"/sub",element:<Subscription/>},
+  {path:"/generate",element:<StoryGenerator/>}
 ];

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate TTS Audio</title>
+    <script>
+        function speak() {
+            const storyText = document.getElementById('storyText').textContent;
+            const utterance = new SpeechSynthesisUtterance(storyText);
+            
+            // Set voice properties
+            utterance.rate = 0.9; // Slightly slower than normal
+            utterance.pitch = 1.0; // Normal pitch
+            utterance.volume = 1.0; // Full volume
+            
+            // Try to find a good voice
+            const voices = window.speechSynthesis.getVoices();
+            const preferredVoices = [
+                'Google US English',
+                'Microsoft David - English (United States)',
+                'Alex',
+                'Samantha'
+            ];
+            
+            for (const voice of voices) {
+                if (preferredVoices.some(v => voice.name.includes(v))) {
+                    utterance.voice = voice;
+                    break;
+                }
+            }
+            
+            // Set up the audio context for recording
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const destination = audioContext.createMediaStreamDestination();
+            
+            // Create a media recorder
+            const mediaRecorder = new MediaRecorder(destination.stream);
+            const audioChunks = [];
+            
+            mediaRecorder.ondataavailable = (event) => {
+                audioChunks.push(event.data);
+            };
+            
+            mediaRecorder.onstop = () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                const audioUrl = URL.createObjectURL(audioBlob);
+                
+                // Create download link
+                const a = document.createElement('a');
+                a.href = audioUrl;
+                a.download = 'ocean-mystery.wav';
+                document.body.appendChild(a);
+                a.click();
+                
+                // Clean up
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(audioUrl);
+                }, 100);
+                
+                console.log('Audio recording complete!');
+            };
+            
+            // Start recording
+            mediaRecorder.start();
+            
+            // Speak the text
+            speechSynthesis.speak(utterance);
+            
+            // Stop recording after speech is done
+            utterance.onend = () => {
+                setTimeout(() => {
+                    mediaRecorder.stop();
+                }, 1000); // Add a small delay to ensure all audio is captured
+            };
+        }
+        
+        // Load voices when the page loads
+        window.speechSynthesis.onvoiceschanged = function() {
+            const voices = window.speechSynthesis.getVoices();
+            console.log('Available voices:', voices);
+        };
+    </script>
+</head>
+<body>
+    <button onclick="speak()">Generate TTS Audio</button>
+    <div id="storyText" style="display: none;">
+        The Ocean's Secret. An underwater expedition uncovers ancient secrets beneath the waves.
+        
+        The deep sea submersible descended into the abyss, its lights barely piercing the darkness of the Marianas Trench. Dr. Elara Voss leaned forward in her seat, her eyes fixed on the sonar display.
+        
+        "There it is," she whispered, pointing to a large, unnatural shape on the screen. "Right where the coordinates said it would be."
+        
+        Her co-pilot, Captain Jonas Rhee, adjusted their course. "I've never seen anything like this," he admitted, his voice tense with excitement. "It's not on any of our charts."
+        
+        As they approached, the shape resolved into what appeared to be the ruins of an ancient city, its spires and domes covered in centuries of coral growth. But what made Elara's breath catch was the strange, glowing symbols that pulsed with an eerie blue light.
+        
+        "This predates any known civilization by thousands of years," she murmured, her gloved fingers hovering over the camera controls. "How is this possible?"
+        
+        Their discovery would challenge everything we thought we knew about human history, but first, they had to make it back to the surface to tell the world.
+    </div>
+    
+    <div style="margin-top: 20px; font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px;">
+        <h2>Instructions:</h2>
+        <ol>
+            <li>Click the "Generate TTS Audio" button above</li>
+            <li>Allow microphone access when prompted (needed for audio capture)</li>
+            <li>Wait for the audio to play completely</li>
+            <li>The audio file will automatically download as 'ocean-mystery.wav'</li>
+            <li>Move the downloaded file to: /public/stories/ocean-mystery/audio.wav</li>
+        </ol>
+        <p><strong>Note:</strong> For best results, use Chrome or Edge browser. Make sure your system's default TTS voice is set to a natural-sounding voice.</p>
+    </div>
+</body>
+</html>

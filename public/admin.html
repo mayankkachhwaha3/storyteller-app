@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StoryTeller Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1f2937;
+            color: white;
+        }
+        .bg-zinc-800 {
+            background-color: #111827;
+        }
+        .bg-zinc-700 {
+            background-color: #1f2937;
+        }
+        .bg-zinc-900 {
+            background-color: #0f172a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold mb-8">StoryTeller Admin Dashboard</h1>
+        
+        <div class="bg-zinc-800 rounded-lg p-6">
+            <form id="uploadForm" class="space-y-6">
+                <div>
+                    <label class="block text-white mb-2">Story Title</label>
+                    <input type="text" name="title" required class="w-full px-4 py-2 rounded-lg bg-zinc-700 text-white">
+                </div>
+
+                <div>
+                    <label class="block text-white mb-2">Story Text</label>
+                    <textarea name="text" rows="4" required class="w-full px-4 py-2 rounded-lg bg-zinc-700 text-white"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-white mb-2">Genre</label>
+                    <input type="text" name="genre" required class="w-full px-4 py-2 rounded-lg bg-zinc-700 text-white">
+                </div>
+
+                <div>
+                    <label class="block text-white mb-2">Author</label>
+                    <input type="text" name="author" required class="w-full px-4 py-2 rounded-lg bg-zinc-700 text-white">
+                </div>
+
+                <div>
+                    <label class="block text-white mb-2">Duration</label>
+                    <input type="text" name="duration" required class="w-full px-4 py-2 rounded-lg bg-zinc-700 text-white">
+                </div>
+
+                <div>
+                    <label class="block text-white mb-2">Description</label>
+                    <textarea name="description" rows="3" required class="w-full px-4 py-2 rounded-lg bg-zinc-700 text-white"></textarea>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-white mb-2">Audio File</label>
+                        <input type="file" name="audio" accept="audio/*" required class="w-full px-4 py-2 rounded-lg bg-zinc-700 text-white">
+                    </div>
+
+                    <div>
+                        <label class="block text-white mb-2">Lullaby File</label>
+                        <input type="file" name="lullaby" accept="audio/*" required class="w-full px-4 py-2 rounded-lg bg-zinc-700 text-white">
+                    </div>
+
+                    <div>
+                        <label class="block text-white mb-2">Cover Image</label>
+                        <input type="file" name="cover" accept="image/*" required class="w-full px-4 py-2 rounded-lg bg-zinc-700 text-white">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    Upload Story
+                </button>
+            </form>
+        </div>
+
+        <div id="status" class="mt-4"></div>
+    </div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const statusDiv = document.getElementById('status');
+            
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    statusDiv.innerHTML = `<div class="bg-green-600 text-white p-4 rounded-lg">Story uploaded successfully!</div>`;
+                    e.target.reset();
+                } else {
+                    statusDiv.innerHTML = `<div class="bg-red-600 text-white p-4 rounded-lg">Error: ${result.error}</div>`;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="bg-red-600 text-white p-4 rounded-lg">An error occurred: ${error.message}</div>`;
+            }
+        });
+    </script>
+</body>
+</html>

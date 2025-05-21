@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Audio Test</title>
+</head>
+<body>
+    <h1>Audio Test</h1>
+    <div id="stories"></div>
+
+    <script>
+        // Demo stories data
+        const stories = [
+            {
+                id: 'the-magical-forest',
+                title: 'The Magical Forest',
+                author: 'StoryTeller AI',
+                genre: 'Fantasy',
+                cover: 'https://images.unsplash.com/photo-1503435980610-a51c2b1c582d?w=800&q=80',
+                audio: 'http://localhost:3001/stories/magical-forest.mp3',
+                duration: '5:23',
+                description: 'A young explorer discovers a hidden forest filled with magical creatures.'
+            },
+            {
+                id: 'space-explorer',
+                title: 'Space Explorer',
+                author: 'Cosmic Tales',
+                genre: 'Science Fiction',
+                cover: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80',
+                audio: 'http://localhost:3001/stories/space-explorer.mp3',
+                duration: '7:45',
+                description: 'A journey through the cosmos to discover new worlds and civilizations.'
+            },
+            {
+                id: 'ocean-mystery',
+                title: "The Ocean's Secret",
+                author: 'Marine Adventures',
+                genre: 'Adventure',
+                cover: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80',
+                audio: 'http://localhost:3001/stories/ocean-mystery.mp3',
+                duration: '6:12',
+                description: 'An underwater expedition uncovers ancient secrets beneath the waves.'
+            }
+        ];
+
+        // Render stories
+        const storiesContainer = document.getElementById('stories');
+        
+        stories.forEach(story => {
+            const storyElement = document.createElement('div');
+            storyElement.className = 'story';
+            storyElement.style.margin = '20px';
+            storyElement.style.padding = '20px';
+            storyElement.style.border = '1px solid #ddd';
+            storyElement.style.borderRadius = '8px';
+            storyElement.style.maxWidth = '400px';
+            
+            storyElement.innerHTML = `
+                <h2>${story.title}</h2>
+                <p>${story.description}</p>
+                <p><strong>Author:</strong> ${story.author}</p>
+                <p><strong>Genre:</strong> ${story.genre}</p>
+                <p><strong>Duration:</strong> ${story.duration}</p>
+                <img src="${story.cover}" alt="${story.title}" style="max-width: 100%; height: auto;">
+                <div>
+                    <button onclick="playAudio('${story.audio}')">Play Audio</button>
+                    <audio id="audio-${story.id}" src="${story.audio}" preload="none"></audio>
+                </div>
+                <div id="status-${story.id}" style="margin-top: 10px; color: #666;"></div>
+            `;
+            
+            storiesContainer.appendChild(storyElement);
+        });
+
+        // Play audio function
+        window.playAudio = function(audioUrl) {
+            // Stop all other audio elements
+            document.querySelectorAll('audio').forEach(audio => {
+                if (audio.src !== audioUrl) {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }
+            });
+            
+            // Play the selected audio
+            const audio = document.querySelector(`audio[src="${audioUrl}"]`);
+            const statusElement = document.getElementById(`status-${audio.id.split('-')[1]}`);
+            
+            if (audio.paused) {
+                audio.play()
+                    .then(() => {
+                        statusElement.textContent = 'Playing...';
+                        statusElement.style.color = 'green';
+                    })
+                    .catch(error => {
+                        statusElement.textContent = `Error: ${error.message}`;
+                        statusElement.style.color = 'red';
+                        console.error('Error playing audio:', error);
+                    });
+            } else {
+                audio.pause();
+                audio.currentTime = 0;
+                statusElement.textContent = 'Paused';
+                statusElement.style.color = '#666';
+            }
+            
+            // Update status when playback ends
+            audio.onended = () => {
+                statusElement.textContent = 'Playback finished';
+                statusElement.style.color = '#666';
+            };
+            
+            audio.onerror = () => {
+                statusElement.textContent = 'Error loading audio';
+                statusElement.style.color = 'red';
+            };
+        };
+    </script>
+</body>
+</html>

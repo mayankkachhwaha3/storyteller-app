@@ -8,4 +8,6 @@ export interface Story {
   duration: string;
   text: string;        // The full story text
   description: string; // Short description of the story
+  createdAt?: string;  // ISO date string when the story was created
+  updatedAt?: string;  // ISO date string when the story was last updated
 }
